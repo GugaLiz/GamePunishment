@@ -1,0 +1,43 @@
+/* pages/redPackage/redPackage.wxss */
+.showContent{
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  width:260px;
+  height: 160px;
+  font-size: 16px;
+  text-align: center;
+  line-height: 160px;  /* 垂直剧终 */
+  box-shadow: 0px 0px 50px 0px #FFB1B0  inset
+}
+
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.setting{
+  display: flex;
+  justify-content: flex-end;
+  width: 80%;
+  margin-top: 35px;
+}
+
+.usermotto {
+  margin-top: 50px;
+}
+
+.weui-input{
+text-align: center;
+}

@@ -1,0 +1,67 @@
+/**app.wxss**/
+@import 'weui.wxss';
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+} 
+
+/*引入iconfont*/
+@font-face {
+  font-family: 'iconfont';  /* project id 996148 */
+  src: url('//at.alicdn.com/t/font_996148_ud4v26bia2.eot');
+  src: url('//at.alicdn.com/t/font_996148_ud4v26bia2.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_996148_ud4v26bia2.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_996148_ud4v26bia2.woff') format('woff'),
+  url('//at.alicdn.com/t/font_996148_ud4v26bia2.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_996148_ud4v26bia2.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-hongbao:before {
+  content: "\e656";
+}
+
+.icon-chengfax:before {
+  content: "\e609";
+}
+
+.icon-shanchu:before {
+  content: "\e630";
+}
+
+.icon-shanchu_:before {
+  content: "\e63e";
+}
+
+.icon-tianjia:before {
+  content: "\e63f";
+}
+
+.icon-qingkon:before{
+  content:'\e70a';
+}
+
+.icon-qingchu:before{
+  content:'\e60d';
+}
+
+.icon-shezhi:before{
+  content:'\e612';
+}
+
+
+
+
+
