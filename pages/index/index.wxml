@@ -1,0 +1,8 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="button-sp-area" style="width: 200px;">
+      <button class="weui-btn" type="default" plain="true" bindtap="packageEnter">抽奖</button>
+      <button class="weui-btn" type="default" plain="true" bindtap="pubnishmentEnter">惩罚</button>
+  </view>
+ 
+</view>

@@ -1,0 +1,30 @@
+<!--pages/redPackage/redPackage.wxml-->
+<view class="container">
+  <view class="userinfo">
+    
+    <block >
+      <text class="showContent">{{title}}</text>
+    </block>
+  </view>
+  <view class="usermotto">
+      <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__bd">
+          <input class="weui-input" placeholder="请输入姓名" auto-focus  bindinput='setUserName' value="{{defaultName}}" />
+      </view>
+      <view class="weui-cell__ft">
+          <text class='iconfont icon-qingchu' hidden='true' bindtap="clearnAll"></text>
+      </view>
+      </view>
+   
+   
+   <button class="weui-btn"  type="warn" plain="true" bindtap="redPackageStart" disabled="{{btnDisabled}}" >
+   <text class='iconfont icon-hongbao'>抽奖</text>
+   </button>
+    
+  </view>
+  
+  <view class="setting">
+    <navigator url='../redPackagesSetting/redPackagesSetting'><text class='iconfont icon-shezhi' style="color:#FFB1B0;font-size:25px;" ></text></navigator>     
+  </view>
+</view>
+

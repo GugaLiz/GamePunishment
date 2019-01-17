@@ -1,0 +1,32 @@
+/* pages/redPackagesDetail/redPackagesDetail.wxss */
+.table {
+  border: 0px solid darkgray;
+}
+.tr {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  height: 2.5rem;
+  align-items: center;
+}
+.td {
+    width:40%;
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+}
+.bg-w{
+  background: snow;
+}
+.bg-g{
+  background: #E6F3F9;
+}
+.th {
+  width: 40%;
+  justify-content: center;
+  background: #FFB1B0;
+  color: #fff;
+  display: flex;
+  height: 2rem;
+  align-items: center;
+}

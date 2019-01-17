@@ -1,0 +1,16 @@
+<!--pages/pubnishment/pubnishment.wxml-->
+<view class="container">
+  <view class="userinfo">
+    
+    <block >
+      <text class="showContent">{{showPubnishment}}</text>
+    </block>
+  </view>
+  <view class="usermotto">
+    <button bindtap="punishStart">惩罚</button>
+  </view>
+
+   <view class="setting">
+   <navigator url='../pubnishSetting/pubnishSetting'><text class='iconfont icon-shezhi' style="color:#abcdef;font-size:25px;" ></text></navigator>  
+  </view>
+</view>

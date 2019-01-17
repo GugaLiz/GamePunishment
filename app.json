@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/setting/setting",
+    "pages/pubnishment/pubnishment",
+    "pages/redPackage/redPackage",
+    "pages/redPackagesSetting/redPackagesSetting",
+    "pages/pubnishSetting/pubnishSetting"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  }
+}

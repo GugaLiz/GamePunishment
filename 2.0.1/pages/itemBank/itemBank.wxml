@@ -1,0 +1,8 @@
+<!--pages/itemBank/itemBank.wxml-->
+<view class="container">
+  <view class="button-sp-area" style="width: 200px;">
+      <button class="weui-btn" type="default" plain="true" bindtap="drawEnter">画面</button>
+      <button class="weui-btn" type="default" plain="true" bindtap="actionEnter">动作</button>
+  </view>
+ 
+</view>
