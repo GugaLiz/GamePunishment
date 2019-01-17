@@ -6,8 +6,15 @@
   height: 160px;
   font-size: 16px;
   text-align: center;
+  padding-left:5px;
   line-height: 160px;  /* 垂直剧终 */
   box-shadow: 0px 0px 50px 0px #abcdef  inset
+}
+
+.showContent span{
+  display: inline-block;
+  line-height: 20px;
+  vertical-align: middle;
 }
 
 .userinfo {
@@ -35,5 +42,5 @@
 }
 
 .usermotto {
-  margin-top: 150px;
+  margin-top: 50px;
 }

@@ -2,11 +2,13 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/setting/setting",
+    "pages/redPackageCounts/redPackageCounts",
     "pages/pubnishment/pubnishment",
     "pages/redPackage/redPackage",
     "pages/redPackagesSetting/redPackagesSetting",
-    "pages/pubnishSetting/pubnishSetting"
+    "pages/pubnishSetting/pubnishSetting",
+    "pages/redPackagesDetail/redPackagesDetail",
+    "pages/itemBank/itemBank"
   ],
   "window": {
     "backgroundTextStyle": "light",

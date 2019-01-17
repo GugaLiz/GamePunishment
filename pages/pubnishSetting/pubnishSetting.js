@@ -1,5 +1,7 @@
 
-const app = getApp()
+const app = getApp();
+var Bmob = require('../../utils/dist/Bmob-1.6.7.min.js');
+var query = null;
 // pages/setting/setting.js
 Page({
 
@@ -7,21 +9,18 @@ Page({
    * 页面的初始数据
    */
   data: {
-    title: "暂无惩罚内容",
-    items: [
-      { name: 'standard is dealt for u.', value: '0', checked: true },
-      { name: 'standard is dealicient for u.', value: '1' }
-    ],
+    titleName:'惩罚',
+    title: "暂无内容",
     checkboxItems: [
-      { name: '惩罚1.', value: '0' },
-      { name: '惩罚2.', value: '1' }
     ],
     isData: false,
     selectItems: [],
 
     showAddModal: true,
     newItemName: '',
-    defaultVal: ''
+    defaultVal: '',
+
+    type:''
 
   },
 
@@ -29,17 +28,48 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    if (this.data.checkboxItems.length > 0) {
-      this.setData({
-        title: "现有惩罚内容",
-        isData: true
-      })
-    } else {
-      this.setData({
-        title: "暂无惩罚内容",
-        isData: false
-      })
+    var me = this;
+    var titleName = me.data.titleName;
+    if(options.btn){
+      if (options.btn) {
+        if (options.btn == "画画") {
+          query = Bmob.Query("drawlist");
+          titleName = '画画';
+
+        } else if (options.btn == "动作") {
+          query = Bmob.Query("actionlist");
+          titleName = '动作'
+        } else if (options.btn == "惩罚") {
+          query = Bmob.Query("penaltieslist");
+          titleName = '惩罚'
+        }
+      }
     }
+    query.find().then(res => {
+      if (res.length > 0) {
+        this.setData({
+          checkboxItems: res,
+          title: "现有内容",
+          isData: true,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+          titleName: titleName
+        })
+
+      } else {
+        this.setData({
+          checkboxItems:[],
+          title: "暂无内容",
+          isData: false,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+        })
+      }
+
+    });
+
   },
 
   /**
@@ -53,7 +83,29 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    query.find().then(res => {
+      if (res.length > 0) {
+        this.setData({
+          checkboxItems: res,
+          title: "现有内容",
+          isData: true,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',         
+        })
 
+      } else {
+        this.setData({
+          checkboxItems: [],
+          title: "暂无内容",
+          isData: false,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+        })
+      }
+
+    });
   },
 
   /**
@@ -111,6 +163,7 @@ Page({
 
   delete: function () {
     var me = this;
+    //var type = me.data.type;
     wx.showModal({
       title: '删除选中',
       content: "是否删除选中？",
@@ -121,13 +174,16 @@ Page({
           for (var i = 0, lenI = items.length; i < lenI; i++) {
             var item = items[i];
             if (item.checked) {
-              items.splice(i, 1);
+             // const query = Bmob.Query('penaltieslist');
+              query.destroy(item.objectId).then(res => {
+              }).catch(err => {
+                console.log(err)
+              })
             }
           }
-          me.setData({
-            checkboxItems: items
-          });
-          me.onLoad();
+
+          //me.onLoad();
+          me.onShow();
         }
       }
     })
@@ -149,10 +205,24 @@ Page({
       cancelText: "否",
       success: function (res) {
         if (res.confirm) {
-          me.setData({
-            checkboxItems: [],
-          });
-          me.onLoad();
+          //const query = Bmob.Query('penaltieslist');
+          // 单词最多删除50条
+          query.limit(checkboxItems.length)
+          query.find().then(todos => {
+
+            todos.destroyAll().then(res => {
+              // 成功批量修改
+              me.setData({
+                checkboxItems: [],
+              });
+            }).catch(err => {
+              console.log(err)
+            });
+          })
+          
+
+          //me.onLoad();
+          me.onShow();
         }
       }
     })
@@ -174,17 +244,26 @@ Page({
   },
 
   confirm: function () {
-    var checkboxItems = this.data.checkboxItems;
-    checkboxItems.push({ name: this.data.newItemName, value: checkboxItems + 1 });
-    this.setData({
+    var me = this;
+
+    me.setData({
       showAddModal: true,
-      checkboxItems: checkboxItems,
-      newItemName: '',
-      defaultVal: '',
-      title: "现有惩罚内容",
-      isData: true
+    });
+    
+    var checkboxItems = this.data.checkboxItems;
+    //加loading
+    wx.showLoading({
+      title: '正在添加',
     });
 
+    query.set("content", this.data.newItemName)
+    query.save().then(res => {
+      me.onShow();
+      wx.hideLoading();
+    }).catch(err => {
+      me.onShow();
+      wx.hideLoading();
+    })
   },
 
   setItemName: function (e) {

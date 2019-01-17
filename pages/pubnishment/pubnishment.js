@@ -1,31 +1,85 @@
 // pages/pubnishment/pubnishment.js
+var Bmob = require('../../utils/dist/Bmob-1.6.7.min.js');
+var query = null;
 Page({
 
   /**
    * 页面的初始数据
    */
+  
   data: {
-    showPubnishment: '请按惩罚按钮进行惩罚抽取',
+    titleName: '',
+    showPubnishment:'请按下方按钮就行抽取',
     checkboxItems: [
-      { name: '惩罚1.', value: '0' },
-      { name: '惩罚2.', value: '1' }
     ],
+    
   },
 
   punishStart: function () {
     var me = this;
+    var titleName = me.data.titleName;
     var checkboxItems = this.data.checkboxItems;
-    var index = Math.floor((Math.random() * checkboxItems.length));
-    var item = checkboxItems[index];
-    this.setData({
-      showPubnishment: item.name
-    })
+    if(checkboxItems.length > 0){
+      var index = Math.floor((Math.random() * checkboxItems.length));
+      var item = checkboxItems[index];
+      this.setData({
+        showPubnishment: item.content
+      })
+     
+
+    }else{
+      wx.showModal({
+        title: '请先设置' + titleName,
+        showCancel: false,
+      })
+      
+    }
+    
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var me = this;
+    var titleName = '';
+    if (options.btn){
+      if (options.btn == "draw"){
+        
+        query = Bmob.Query("drawlist");
+        titleName = '画画';
+      } else if (options.btn == "action"){
+         query = Bmob.Query("actionlist");
+        titleName = '动作';
+       
+      } else if (options.btn == "punish") {
+        query = Bmob.Query("penaltieslist");
+        titleName = '惩罚';
+        
+    }else{
+        me.setData({
+          checkboxItems: [],
+        })
+    }
+    
+      query.find().then(res => {
+        if (res.length > 0) {
+          me.setData({
+            checkboxItems: res,
+            titleName: titleName
+          })
+
+        }else{
+          me.setData({
+            checkboxItems: [],
+            titleName: titleName
+          })
+        }
+
+      });
+  
+    }
+
   },
 
   /**
@@ -39,7 +93,21 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    var me = this;
+    //const query = Bmob.Query("penaltieslist");
+    query.find().then(res => {
+      if (res.length > 0) {
+        me.setData({
+          checkboxItems: res
+        })
 
+      }else{
+        me.setData({
+          checkboxItems: []
+        })
+      }
+
+    });
   },
 
   /**

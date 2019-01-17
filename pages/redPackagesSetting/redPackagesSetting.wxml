@@ -16,8 +16,8 @@
                         <view >
                             <image src="{{icon2}}" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;"></image>
                         </view>
-                        <view class="">
-                            <view style="display: inline-block; vertical-align: middle;padding-righ:80px;">红包金额{{item.count}}</view>
+                        <view wx:if="{{item.money}}">
+                            <view style="display: inline-block; vertical-align: middle;padding-righ:80px;">红包金额{{item.money}}</view>
                             <view class="weui-badge" style="margin-left: 5px;">{{item.num}}个</view>
                         </view>
                     </view>
@@ -38,6 +38,7 @@
             <input type="digit" placeholder='请输入红包金额' auto-focus  bindinput='setItemCount' value="{{defaultVal}}"/>
             <input type="number" placeholder='请输入红包个数' auto-focus  bindinput='setItemNum' value="{{defaultVal}}"/>
             </modal>
+
         </view>
 </view>
 

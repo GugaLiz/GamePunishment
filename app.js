@@ -1,6 +1,9 @@
 //app.js
 App({
   onLaunch: function () {
+    var Bmob = require('./utils/dist/Bmob-1.6.7.min.js');
+    Bmob.initialize("9834860fcb6f79efa01935d344f65a89", "9e3fc0e9219d7a93a800ed6fb0415674");
+
     // 展示本地存储能力
     var logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())

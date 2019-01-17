@@ -12,7 +12,7 @@
                         <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"></icon>
                     </view>
                     
-                    <view class="weui-cell__bd" wx:if="{{item.name}}">{{item.name}}</view>          
+                    <view class="weui-cell__bd" wx:if="{{item.content}}">{{item.content}}</view>          
                 </label>
                 
             </checkbox-group>
@@ -21,12 +21,12 @@
                删除选中</button>
                 <button style="margin-top:15px;background-color: white;font-size: 12px;color:red;" type="warn" size="mini" disabled="{{!isData}}" bindtap="deleteAll">删除全部</button>
                 <button style="margin-top:15px;background-color: white;font-size: 12px;color:green;" type="primary" size="mini" bindtap="addItem">
-                 新增惩罚
+                 新增内容
                 </button>
             </view>
 
             <modal hidden="{{showAddModal}}" title="新增" confirm-text="提交" cancel-text="取消" bindcancel="cancel" bindconfirm="confirm">
-            <input type="text" placeholder='请输入惩罚内容' auto-focus  bindinput='setItemName' value="{{defaultVal}}"/>
+            <input type="text" placeholder='请输入内容' auto-focus  bindinput='setItemName' value="{{defaultVal}}"/>
             </modal>
         </view>
 </view>

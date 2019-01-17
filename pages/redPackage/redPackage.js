@@ -1,4 +1,6 @@
 // pages/redPackage/redPackage.js
+var Bmob = require("../../utils/dist/Bmob-1.6.7.min.js");
+var query = Bmob.Query("packetlist");
 Page({
 
   /**
@@ -10,7 +12,7 @@ Page({
     newUserName:'',
     defaultName:'',
     btnDisabled:false,
-    redPackages:[1,3,4,5]
+    redPackages:[]
 
   },
 
@@ -32,12 +34,14 @@ Page({
   },
 
   setUserName: function (e) {
+  
     this.setData({
       newUserName: e.detail.value
     });
   },
 
   redPackageStart:function(){
+    var me = this;
     var name = this.data.newUserName;
     if (name === '') {
       wx.showModal({
@@ -47,13 +51,85 @@ Page({
       })
 
     } else {
-      var counts = this.data.redPackages;
-      var index = Math.floor((Math.random() * counts.length));
-      var num = counts[index];
-      this.setData({
-        title: name + ',恭喜领取' + num + '元红包',
-        btnDisabled: true
-      });
+      //查询红包设置
+      var counts = this.data.counts;
+      if(counts && counts.length > 0){
+        var index = Math.floor((Math.random() * counts.length));
+        var money = counts[index];
+        //数据插入result表
+        var resultTab = Bmob.Query("result");
+        resultTab.set("userName", this.data.newUserName)
+        resultTab.set("money", parseFloat(money))
+        resultTab.save().then(res => {
+          this.setData({
+            title: name + ',恭喜领取' + money + '元红包',
+            btnDisabled: true
+          });
+        }).catch(err => {
+          console.info(err);
+
+        })
+
+        //packetlist更新
+        var obj = query.equalTo("money", "==", money);
+        query.find().then(res => {
+          if(res[0]){
+            var num = res[0].num - 1;
+            if (num === 0) {
+              query.destroy(res[0].objectId).then(res => {
+              }).catch(err => {
+                console.log(err)
+              })
+            } else {
+              query.get(res[0].objectId).then(res => {
+                res.set('num', parseInt(num))
+                res.save()
+              }).catch(err => {
+                console.log(err)
+              })
+            }
+          }else{
+            wx.showModal({
+              title: '暂无红包可抽啦，请先设置红包',
+
+              showCancel: false,
+            })
+          }
+        });
+      }else{
+        wx.showModal({
+          title: '暂无红包可抽啦，请先设置红包',
+
+          showCancel: false,
+        })
+      }
+      
+      // query.find().then(res => {       
+      //   if (res.length > 0) {
+      //     var counts = [];
+      //     for (var i = 0; i < res.length; i++) {
+      //       var it = res[i];
+      //       if (it.money && it.num) {
+      //         for(var j =0;j<it.num;j++){
+      //           counts.push(it.money);
+      //         }
+              
+      //       }
+      //     }
+          
+          
+      //   }else{
+         
+      //   }
+      // });
+
+      //过2秒恢复抽奖按钮
+      setTimeout(function () {
+        me.setData({
+          btnDisabled: false
+        })
+      }, 2000);
+      
     }
     
     
@@ -65,12 +141,30 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function () {
-    this.setData({
-      title: "请输入姓名进行抽红包",
-      newUserName: '',
-      defaultName:'',
-      btnDisabled: false
-    });
+    var me = this;
+
+    query.find().then(res => {
+      if (res.length > 0) {
+        var counts = [];
+        for (var i = 0; i < res.length; i++) {
+          var it = res[i];
+          if (it.money && it.num) {
+            for (var j = 0; j < it.num; j++) {
+              counts.push(it.money);
+            }
+
+          }
+        }
+
+        this.setData({
+          title: "请输入姓名进行抽红包",
+          newUserName: '',
+          defaultName: '',
+          btnDisabled: false,
+          counts:counts
+        });
+      }
+    })
   },
 
   /**
@@ -84,7 +178,24 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    query.find().then(res => {
+      if (res.length > 0) {
+        var counts = [];
+        for (var i = 0; i < res.length; i++) {
+          var it = res[i];
+          if (it.money && it.num) {
+            for (var j = 0; j < it.num; j++) {
+              counts.push(it.money);
+            }
 
+          }
+        }
+
+        this.setData({
+          counts: counts
+        });
+      }
+    })
   },
 
   /**

@@ -8,6 +8,10 @@ Page({
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
+    defaultVal:'',
+    psw:'',
+    showPswModal:true,
+    type:''
 
     
   },
@@ -54,16 +58,77 @@ Page({
     })
   },
 
-  packageEnter:function(){
-    wx.navigateTo({
-      url: '../redPackage/redPackage'
+  checkPsw:function(e){
+    this.setData({
+      psw: e.detail.value
     })
+  },
+
+  cancel: function () {
+    this.setData({
+      showPswModal: true,
+      newItemName: '',
+      defaultVal: ''
+    })
+  },
+
+  confirm: function () {
+    var me = this;
+
+    me.setData({
+      showPswModal: true,
+    });
+
+    var type = me.data.type;
+    var enterPsw = me.data.psw;
+    if(enterPsw == "20190101"){
+      if(type == "item"){
+        wx.navigateTo({
+          url: '../itemBank/itemBank'
+        })
+      }else if(type == "package"){
+        wx.navigateTo({
+          url: '../redPackage/redPackage'
+        });
+      }else{
+        wx.showModal({
+          title: '操作错误',
+          showCancel: false,
+        })
+      }
+      
+    }else{
+      wx.showModal({
+        title: '错误：请重新输入正确密钥',
+        showCancel: false,
+      })
+    }
+  },
+
+  packageEnter:function(){
+    var me = this;
+    //验证
+    me.setData({
+      type:'package',
+      showPswModal: false,
+    });
+
   },
 
   pubnishmentEnter:function(){
     wx.navigateTo({
-      url: '../pubnishment/pubnishment'
+      url: '../pubnishment/pubnishment?btn=punish'
     })
 
+  },
+
+  itemBankEnter: function () {
+    var me = this;
+    me.setData({
+      type:'item',
+      showPswModal: false,
+    });
+
+    
   }
 })

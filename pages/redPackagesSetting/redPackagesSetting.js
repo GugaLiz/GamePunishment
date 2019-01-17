@@ -1,20 +1,16 @@
 
-const app = getApp()
+const app = getApp();
 // pages/setting/setting.js
+var Bmob = require('../../utils/dist/Bmob-1.6.7.min.js');
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    title: "暂无惩罚内容",
-    items: [
-      { name: 'standard is dealt for u.', value: '0', checked: true },
-      { name: 'standard is dealicient for u.', value: '1' }
-    ],
+    title: "暂无红包设置",
     checkboxItems: [
-      { count:2.5, num:1, value: '0' },
-      { count: 0.1, num:2, value: '1' }
+
     ],
     isData: false,
     selectItems: [],
@@ -23,6 +19,8 @@ Page({
     newItemName: 0.00,
     newItemNum:0,
     defaultVal:'',
+    
+    isLoading:true,
 
     icon2: '../../images/haobao.png',
 
@@ -32,17 +30,32 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    if (this.data.checkboxItems.length > 0) {
-      this.setData({
-        title: "现有红包设置",
-        isData: true
-      })
-    } else {
-      this.setData({
-        title: "暂无红包设置",
-        isData: false
-      })
-    }
+    const query = Bmob.Query("packetlist");
+    query.find().then(res => {
+      if (res.length > 0) {
+        this.setData({
+          checkboxItems: res,
+          title: "现有红包设置",
+          isData: true,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+          isLoading:true
+        })
+
+      } else {
+        this.setData({
+          checkboxItems: [],
+          title: "暂无红包设置",
+          isData: false,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+          isLoading: true
+        })
+      }
+
+    });
   },
 
   /**
@@ -124,7 +137,12 @@ Page({
           for (var i = 0, lenI = items.length; i < lenI; i++) {
             var item = items[i];
             if (item.checked) {
-              items.splice(i, 1);
+              const query = Bmob.Query('packetlist');
+              query.destroy(item.objectId).then(res => {
+                me.onLoad();
+              }).catch(err => {
+                console.log(err)
+              })
             }
           }
           me.setData({
@@ -152,10 +170,25 @@ Page({
       cancelText: "否",
       success: function (res) {
         if (res.confirm) {
-          me.setData({
-            checkboxItems: [],
-          });
-          me.onLoad();
+          if (res.confirm) {
+            const query = Bmob.Query('packetlist');
+            // 单词最多删除50条
+            query.limit(checkboxItems.length)
+            query.find().then(todos => {
+
+              todos.destroyAll().then(res => {
+                // 成功批量修改
+                me.setData({
+                  checkboxItems: [],
+                });
+              }).catch(err => {
+                console.log(err)
+              });
+            })
+
+
+            me.onLoad();
+          }
         }
       }
     })
@@ -177,16 +210,53 @@ Page({
   },
 
   confirm: function () {
-    var checkboxItems = this.data.checkboxItems;
-    checkboxItems.push({ count: this.data.newItemName, num: this.data.newItemNum, value: checkboxItems + 1 });
-    this.setData({
-      showAddModal: true,
-      checkboxItems: checkboxItems,
-      newItemName: '',
-      defaultVal: '',
-      title: "现有红包设置",
-      isData: true
-    });
+    var me = this;
+    me.setData({
+      showAddModal:true
+    })
+
+    if (this.data.newItemName === 0 || this.data.newItemNum === 0) {
+      wx.showModal({
+        title: '不能输入空值',
+        showCancel: false,
+      })
+    } else {
+      var checkboxItems = this.data.checkboxItems;
+      wx.showLoading({
+        title: '正在添加',
+      });
+      const query = Bmob.Query('packetlist');
+      //查找是否红包金额已存在
+      var hsId = null;
+      query.equalTo("money", "==", parseFloat(this.data.newItemName));
+      query.find().then(res => {
+        if(res[0]){
+          var num = parseInt(res[0].num) + parseInt( me.data.newItemNum);
+          query.get(res[0].objectId).then(res => {
+            res.set('num', parseInt(num))
+            res.save();
+            me.onLoad();
+            wx.hideLoading();
+          }).catch(err => {
+            console.log(err)
+          })
+        }else{
+          query.set("money", parseFloat(me.data.newItemName))
+          query.set("num", parseInt(me.data.newItemNum))
+          query.set("value", checkboxItems.length + 1)
+          query.save().then(res => {
+            me.onLoad();
+          }).catch(err => {
+            console.info(err);
+            me.onLoad();
+            wx.hideLoading();
+          })
+
+        }
+      });
+      
+    }
+   
 
   },
 
@@ -194,11 +264,15 @@ Page({
     this.setData({
       newItemName: e.detail.value
     })
+   
+    
+    
   },
 
   setItemNum:function(e){
     this.setData({
       newItemNum: e.detail.value
     })
+    
   }
 })
