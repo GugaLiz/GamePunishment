@@ -1,9 +1,10 @@
 
 <view class="page">
 <view class="page__bd">
-<view class="weui-cells__title" style="text-align:center">{{title}}</view>
+<view class="weui-cells__title" style="text-align:center;position:fixed;margin-top:0;width:100%;background:#fff;z-index:999">{{title}}</view>
         <view class="weui-cells weui-cells_after-title">
-            <checkbox-group bindchange="checkboxChange">
+        <view style="overflow:hidden;">
+            <checkbox-group bindchange="checkboxChange" style="padding-top:13px;margin-bottom:30px;">
                 <label class="weui-cell weui-check__label" wx:for="{{checkboxItems}}" wx:key="value" >                 
                     <checkbox class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
 
@@ -16,17 +17,22 @@
                 </label>
                 
             </checkbox-group>
-            <view class="weui-cell">
-                <button class="btn" style="margin-top:15px;background-color: white;font-size: 12px;color:orange;" type="default" size="mini" disabled="{{!isData}}" bindtap="delete">
+            </view>
+             <view class="weui-cell" style="position:fixed;bottom:0;width:100%;background:#eee;z-index:999">
+                <button class="btn" style="background-color: white;font-size: 12px;color:orange;" type="default" size="mini" disabled="{{!isData}}" bindtap="delete">
                删除选中</button>
-                <button style="margin-top:15px;background-color: white;font-size: 12px;color:red;" type="warn" size="mini" disabled="{{!isData}}" bindtap="deleteAll">删除全部</button>
-                <button style="margin-top:15px;background-color: white;font-size: 12px;color:green;" type="primary" size="mini" bindtap="addItem">
+                <button style="background-color: white;font-size: 12px;color:red;" type="warn" size="mini" disabled="{{!isData}}" bindtap="deleteAll">删除全部</button>
+                <button style="background-color: white;font-size: 12px;color:green;" type="primary" size="mini" bindtap="addItem">
                  新增内容
                 </button>
             </view>
 
             <modal hidden="{{showAddModal}}" title="新增" confirm-text="提交" cancel-text="取消" bindcancel="cancel" bindconfirm="confirm">
-            <input type="text" placeholder='请输入内容' auto-focus  bindinput='setItemName' value="{{defaultVal}}"/>
+            <input type="text" placeholder='请输入内容'   bindinput='setItemName' value="{{defaultVal}}"/>
+            </modal>
+
+            <modal hidden="{{showPswModal}}" title="请输入密钥" confirm-text="提交" cancel-text="取消" bindcancel="delcancel" bindconfirm="delconfirm">
+            <input type="number" placeholder='请输入密钥'   bindinput='checkPsw' value="{{defaultPsw}}"/>
             </modal>
         </view>
 </view>

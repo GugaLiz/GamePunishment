@@ -2,6 +2,7 @@
 const app = getApp();
 // pages/setting/setting.js
 var Bmob = require('../../utils/dist/Bmob-1.6.7.min.js');
+const query = Bmob.Query("packetlist");
 Page({
 
   /**
@@ -29,8 +30,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    const query = Bmob.Query("packetlist");
+  onLoad: function (options) {   
     query.find().then(res => {
       if (res.length > 0) {
         this.setData({
@@ -69,7 +69,31 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
+    query.find().then(res => {
+      if (res.length > 0) {
+        this.setData({
+          checkboxItems: res,
+          title: "现有红包设置",
+          isData: true,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+          isLoading: true
+        })
 
+      } else {
+        this.setData({
+          checkboxItems: [],
+          title: "暂无红包设置",
+          isData: false,
+          defaultVal: '',
+          showAddModal: true,
+          newItemName: '',
+          isLoading: true
+        })
+      }
+
+    });
   },
 
   /**
@@ -133,11 +157,13 @@ Page({
       cancelText: "否",
       success: function (res) {
         if (res.confirm) {
+          wx.showLoading({
+            title: '正在删除',
+          });
           var items = me.data.checkboxItems;
           for (var i = 0, lenI = items.length; i < lenI; i++) {
             var item = items[i];
             if (item.checked) {
-              const query = Bmob.Query('packetlist');
               query.destroy(item.objectId).then(res => {
                 me.onLoad();
               }).catch(err => {
@@ -149,6 +175,7 @@ Page({
             checkboxItems: items
           });
           me.onLoad();
+          wx.hideLoading();
         }
       }
     })
@@ -170,8 +197,10 @@ Page({
       cancelText: "否",
       success: function (res) {
         if (res.confirm) {
-          if (res.confirm) {
-            const query = Bmob.Query('packetlist');
+          if (res.confirm) {  
+            wx.showLoading({
+              title: '正在删除',
+            })   ;      
             // 单词最多删除50条
             query.limit(checkboxItems.length)
             query.find().then(todos => {
@@ -188,6 +217,7 @@ Page({
 
 
             me.onLoad();
+            wx.hideLoading();
           }
         }
       }
@@ -225,7 +255,6 @@ Page({
       wx.showLoading({
         title: '正在添加',
       });
-      const query = Bmob.Query('packetlist');
       //查找是否红包金额已存在
       var hsId = null;
       query.equalTo("money", "==", parseFloat(this.data.newItemName));
@@ -235,20 +264,25 @@ Page({
           query.get(res[0].objectId).then(res => {
             res.set('num', parseInt(num))
             res.save();
-            me.onLoad();
+           // me.onLoad();
+            me.onShow();
             wx.hideLoading();
           }).catch(err => {
-            console.log(err)
+            console.log(err);
+            wx.hideLoading();
+
           })
         }else{
           query.set("money", parseFloat(me.data.newItemName))
           query.set("num", parseInt(me.data.newItemNum))
           query.set("value", checkboxItems.length + 1)
           query.save().then(res => {
-            me.onLoad();
+            me.onShow();
+            wx.hideLoading();
           }).catch(err => {
             console.info(err);
-            me.onLoad();
+           // me.onLoad();
+            me.onShow();
             wx.hideLoading();
           })
 

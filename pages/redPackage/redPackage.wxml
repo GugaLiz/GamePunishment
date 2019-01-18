@@ -8,22 +8,33 @@
   </view>
   <view class="usermotto">
       <view class="weui-cell weui-cell_input weui-cell_vcode">
-      <view class="weui-cell__bd">
+             <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindNameChange" value="{{nameIndex}}" range="{{names}}">
+                        <view class="weui-select" style="width:120px;text-align:center">{{names[nameIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+
+      <!-- <view class="weui-cell__bd">
+
           <input class="weui-input" placeholder="请输入姓名" auto-focus  bindinput='setUserName' value="{{defaultName}}" />
-      </view>
-      <view class="weui-cell__ft">
+      </view> -->
+      <view class="weui-cell__ft" hidden='true'>
           <text class='iconfont icon-qingchu'  bindtap="clearnAll"></text>
       </view>
       </view>
    
    
-   <button class="weui-btn"  type="warn" plain="true" bindtap="redPackageStart" disabled="{{btnDisabled}}" >
+   <button class="weui-btn"  type="warn" plain="true" bindtap="redPackageStart" disabled="{{btnDisabled}}" style="width:150px;">
    <text class='iconfont icon-hongbao'>抽奖</text>
    </button>
     
   </view>
   
   <view class="setting">
+    <navigator url='../pubnishSetting/pubnishSetting?btn=addName'><text class='iconfont icon-tianjia' style="color:#FFB1B0;font-size:25px;padding-right:20px;" ></text></navigator> 
+
   <navigator url='../redPackageCounts/redPackageCounts'><text class='iconfont icon-xiangqing' style="color:#FFB1B0;font-size:25px;padding-right:20px;" ></text></navigator> 
 
     <navigator url='../redPackagesSetting/redPackagesSetting'><text class='iconfont icon-shezhi' style="color:#FFB1B0;font-size:25px;" ></text></navigator>     

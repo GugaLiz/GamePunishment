@@ -20,8 +20,74 @@ Page({
     newItemName: '',
     defaultVal: '',
 
-    type:''
+    type:'',
 
+    showPswModal: true,
+    psw:'',
+    defaultPsw:'',
+
+  },
+
+  checkPsw: function (e) {
+    this.setData({
+      psw: e.detail.value
+    })
+  },
+
+  delcancel: function () {
+    this.setData({
+      showPswModal: true,
+      defaultPsw: ''
+    })
+  },
+
+  delconfirm: function () {
+    var me = this;
+    var items = me.data.checkboxItems;
+    var type = me.data.type;
+    me.setData({
+      showPswModal: true,
+    });
+    var enterPsw = me.data.psw;
+    if (enterPsw == "20190101") {
+      
+      wx.showLoading({
+        title: '正在删除',
+      });
+      if(type == "del"){
+        for (var i = 0, lenI = items.length; i < lenI; i++) {
+          var item = items[i];
+          if (item.checked) {
+            query.destroy(item.objectId).then(res => {
+            }).catch(err => {
+              console.log(err);
+              wx.hideLoading();
+            })
+          }
+        }
+      }else if(type == 'delAll'){
+        query.limit(items.length)
+        query.find().then(todos => {
+
+          todos.destroyAll().then(res => {
+            // 成功批量修改
+            me.setData({
+              checkboxItems: [],
+            });
+          }).catch(err => {
+            console.log(err);
+            wx.hideLoading();
+          });
+        })
+      }
+      me.onShow();
+      wx.hideLoading();
+    } else {
+      wx.showModal({
+        title: '错误：请重新输入正确密钥',
+        showCancel: false,
+      })
+    }
   },
 
   /**
@@ -42,6 +108,9 @@ Page({
         } else if (options.btn == "惩罚") {
           query = Bmob.Query("penaltieslist");
           titleName = '惩罚'
+        } else if (options.btn == "addName"){
+          query = Bmob.Query("namelist");
+          titleName = '名字';
         }
       }
     }
@@ -163,27 +232,43 @@ Page({
 
   delete: function () {
     var me = this;
-    //var type = me.data.type;
+    var titleName = me.data.titleName;
     wx.showModal({
       title: '删除选中',
       content: "是否删除选中？",
       cancelText: "否",
       success: function (res) {
         if (res.confirm) {
-          var items = me.data.checkboxItems;
-          for (var i = 0, lenI = items.length; i < lenI; i++) {
-            var item = items[i];
-            if (item.checked) {
-             // const query = Bmob.Query('penaltieslist');
-              query.destroy(item.objectId).then(res => {
-              }).catch(err => {
-                console.log(err)
-              })
-            }
-          }
+          if (titleName == "惩罚"){
+            me.setData({
+              showPswModal: false,
+              type: 'del'
+            })
 
-          //me.onLoad();
-          me.onShow();
+          }else{
+            wx.showLoading({
+              title: '正在删除',
+            });
+            var items = me.data.checkboxItems;
+            for (var i = 0, lenI = items.length; i < lenI; i++) {
+              var item = items[i];
+              if (item.checked) {
+                query.destroy(item.objectId).then(res => {
+                 
+                }).catch(err => {
+                  console.log(err)
+                })
+              }
+            }
+            me.setData({
+              checkboxItems: items
+            });
+            me.onShow();
+            wx.hideLoading();
+
+          }
+          
+          
         }
       }
     })
@@ -205,24 +290,35 @@ Page({
       cancelText: "否",
       success: function (res) {
         if (res.confirm) {
-          //const query = Bmob.Query('penaltieslist');
-          // 单词最多删除50条
-          query.limit(checkboxItems.length)
-          query.find().then(todos => {
-
-            todos.destroyAll().then(res => {
-              // 成功批量修改
-              me.setData({
-                checkboxItems: [],
-              });
-            }).catch(err => {
-              console.log(err)
+          if(titleName == "惩罚"){
+            me.setData({
+              showPswModal: false,
+              type: 'delAll'
             });
-          })
-          
 
-          //me.onLoad();
-          me.onShow();
+          }else{
+            wx.showLoading({
+              title: '正在删除',
+            });
+            // 单词最多删除50条
+            query.limit(checkboxItems.length)
+            query.find().then(todos => {
+
+              todos.destroyAll().then(res => {
+                // 成功批量修改
+                me.setData({
+                  checkboxItems: [],
+                });
+              }).catch(err => {
+                console.log(err)
+              });
+            })
+
+
+            me.onShow();
+            wx.hideLoading();
+          }
+          
         }
       }
     })

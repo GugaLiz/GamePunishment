@@ -6,7 +6,7 @@
        <button class="weui-btn" type="default" plain="true" bindtap="itemBankEnter">题库</button>
 
          <modal hidden="{{showPswModal}}" title="请输入密钥" confirm-text="提交" cancel-text="取消" bindcancel="cancel" bindconfirm="confirm">
-            <input type="number" placeholder='请输入密钥' auto-focus  bindinput='checkPsw' value="{{defaultVal}}"/>
+            <input type="number" placeholder='请输入密钥'  bindinput='checkPsw' value="{{defaultVal}}"/>
             </modal>
   </view>
  
